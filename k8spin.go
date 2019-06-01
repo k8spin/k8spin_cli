@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -10,6 +11,10 @@ import (
 	"github.com/parnurzeal/gorequest"
 	"github.com/urfave/cli"
 )
+
+type httpError struct {
+	Error string `json:"error"`
+}
 
 type namespace struct {
 	Namespace        string   `json:"namespace"`
@@ -53,7 +58,7 @@ func main() {
 				request := gorequest.New()
 				resp, body, _ := request.Get(Api_Base+"/namespaces").Set("K8SPIN-TOKEN", token).End()
 				debugRequest(body)
-				if httpCodeCheck(resp.StatusCode) {
+				if httpCodeCheck(resp) {
 					printNamespacesTable(body)
 				}
 				return nil
@@ -69,7 +74,7 @@ func main() {
 				request := gorequest.New()
 				resp, body, _ := request.Get(Api_Base+"/namespaces/"+namespace).Set("K8SPIN-TOKEN", token).End()
 				debugRequest(body)
-				if httpCodeCheck(resp.StatusCode) {
+				if httpCodeCheck(resp) {
 					fmt.Println(body)
 				}
 				return nil
@@ -89,7 +94,7 @@ func main() {
 					End()
 
 				debugRequest(body)
-				if httpCodeCheck(resp.StatusCode) {
+				if httpCodeCheck(resp) {
 					fmt.Println("Namespace " + namespace + " created")
 				}
 				return nil
@@ -108,7 +113,7 @@ func main() {
 					End()
 
 				debugRequest(body)
-				if httpCodeCheck(resp.StatusCode) {
+				if httpCodeCheck(resp) {
 					fmt.Println("Namespace " + namespace + " deleted")
 				}
 				return nil
@@ -129,18 +134,29 @@ func debugRequest(body string) {
 	}
 }
 
-func httpCodeCheck(httpCode int) bool {
+func httpCodeCheck(response gorequest.Response) bool {
 	if debug {
 		fmt.Println("HTTP Code:")
-		fmt.Println(httpCode)
+		fmt.Println(response.StatusCode)
+		fmt.Println("HTTP Response:")
+		fmt.Println(response.Body)
 	}
-	if httpCode == 401 {
-		fmt.Println("API token not valid")
+
+	buf := new(bytes.Buffer)
+	buf.ReadFrom(response.Body)
+	jsonResponse := buf.String()
+
+	error := httpError{}
+	json.Unmarshal([]byte(jsonResponse), &error)
+
+	if response.StatusCode == 500 {
+		fmt.Println("Unkown error")
 		return false
-	} else if httpCode == 404 {
-		fmt.Println("Not found")
+	} else if response.StatusCode >= 300 {
+		fmt.Println(error.Error)
 		return false
 	}
+
 	return true
 }
 
