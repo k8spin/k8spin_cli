@@ -149,9 +149,9 @@ func printNamespacesTable(body string) {
 	json.Unmarshal([]byte(body), &namespaces)
 
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Name", "Namespace", "Expiration"})
+	table.SetHeader([]string{"Name", "Namespace", "Expiration", "Status"})
 	for _, namespace := range namespaces {
-		table.Append([]string{namespace.NamespaceName, namespace.Namespace, namespace.Expiration})
+		table.Append([]string{namespace.NamespaceName, namespace.Namespace, namespace.Expiration, namespace.Status})
 	}
 	table.Render() // Send output
 }
