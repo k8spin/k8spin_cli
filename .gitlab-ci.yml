@@ -5,7 +5,7 @@ build:
   stage: build
   image: golang:1.12-alpine
   before_script:
-    - apk add git
+    - apk add git 
     - cd $GOPATH/src
     - mkdir -p gitlab.com/$CI_PROJECT_NAMESPACE
     - cd gitlab.com/$CI_PROJECT_NAMESPACE
@@ -15,7 +15,7 @@ build:
     - go get github.com/olekukonko/tablewriter
     - go get github.com/parnurzeal/gorequest
     - go get github.com/urfave/cli
-    - go build -o k8spin
+    - go build -o $CI_PROJECT_NAME/k8spin
   artifacts:
     paths:
       - $CI_PROJECT_NAME/k8spin
