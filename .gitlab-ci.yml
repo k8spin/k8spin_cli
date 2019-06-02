@@ -5,6 +5,7 @@ build:
   stage: build
   image: golang:1.12-alpine
   before_script:
+    - apk add git
     - cd $GOPATH/src
     - mkdir -p gitlab.com/$CI_PROJECT_NAMESPACE
     - cd gitlab.com/$CI_PROJECT_NAMESPACE
