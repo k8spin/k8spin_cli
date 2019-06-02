@@ -15,7 +15,12 @@ build:
     - go get github.com/olekukonko/tablewriter
     - go get github.com/parnurzeal/gorequest
     - go get github.com/urfave/cli
-    - go build -o $CI_PROJECT_NAME/k8spin
+    - |
+      for GOOS in darwin linux windows; do
+          for GOARCH in 386 amd64; do
+              go build -v -o k8spin-$GOOS-$GOARCH
+          done
+      done
   artifacts:
     paths:
       - $CI_PROJECT_NAME/k8spin
