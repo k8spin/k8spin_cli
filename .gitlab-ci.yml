@@ -16,4 +16,5 @@ build:
     - go get github.com/urfave/cli
     - go build -o k8spin
   artifacts:
-    - k8spin
+    paths:
+      - $CI_PROJECT_NAME/k8spin
