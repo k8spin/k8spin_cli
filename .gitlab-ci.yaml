@@ -1,0 +1,19 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: golang:1.12-alpine
+  before_script:
+    - cd $GOPATH/src
+    - mkdir -p gitlab.com/$CI_PROJECT_NAMESPACE
+    - cd gitlab.com/$CI_PROJECT_NAMESPACE
+    - ln -s $CI_PROJECT_DIR
+    - cd $CI_PROJECT_NAME
+  script:
+    - go get github.com/olekukonko/tablewriter
+    - go get github.com/parnurzeal/gorequest
+    - go get github.com/urfave/cli
+    - go build -o k8spin
+  artifacts:
+    - k8spin

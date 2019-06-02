@@ -33,7 +33,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "k8spin"
-	app.Version = "0.1.1"
+	app.Version = "0.1.2"
 	app.Usage = "CLI for managing namespaces"
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
@@ -56,7 +56,9 @@ func main() {
 			Usage:   "list all namespaces",
 			Action: func(c *cli.Context) error {
 				request := gorequest.New()
-				resp, body, _ := request.Get(Api_Base+"/namespaces").Set("K8SPIN-TOKEN", token).End()
+				resp, body, _ := request.Get(Api_Base+"/namespaces").
+					Set("Authorization", "Bearer "+token).
+					End()
 				debugRequest(body)
 				if httpCodeCheck(resp) {
 					printNamespacesTable(body)
@@ -72,7 +74,9 @@ func main() {
 				var namespace = c.Args().First()
 
 				request := gorequest.New()
-				resp, body, _ := request.Get(Api_Base+"/namespaces/"+namespace).Set("K8SPIN-TOKEN", token).End()
+				resp, body, _ := request.Get(Api_Base+"/namespaces/"+namespace).
+					Set("Authorization", "Bearer "+token).
+					End()
 				debugRequest(body)
 				if httpCodeCheck(resp) {
 					fmt.Println(body)
@@ -89,7 +93,7 @@ func main() {
 
 				request := gorequest.New()
 				resp, body, _ := request.Post(Api_Base+"/namespaces").
-					Set("K8SPIN-TOKEN", token).
+					Set("Authorization", "Bearer "+token).
 					Send(`{"namespace_name":"` + namespace + `"}`).
 					End()
 
@@ -109,7 +113,7 @@ func main() {
 
 				request := gorequest.New()
 				resp, body, _ := request.Delete(Api_Base+"/namespaces/"+namespace).
-					Set("K8SPIN-TOKEN", token).
+					Set("Authorization", "Bearer "+token).
 					End()
 
 				debugRequest(body)
