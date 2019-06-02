@@ -21,3 +21,8 @@ build:
   artifacts:
     paths:
       - '$CI_PROJECT_DIR/build.tar.gz'
+  tags:
+    - private
+    - docker
+    - kubernetes
+    - amd64
