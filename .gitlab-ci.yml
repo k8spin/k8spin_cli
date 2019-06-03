@@ -5,7 +5,7 @@ build:
   stage: build
   image: golang:1.12-stretch
   before_script:
-    - apk add git 
+    - apt-get install -y git 
     - cd $GOPATH/src
     - mkdir -p gitlab.com/$CI_PROJECT_NAMESPACE
     - cd gitlab.com/$CI_PROJECT_NAMESPACE
