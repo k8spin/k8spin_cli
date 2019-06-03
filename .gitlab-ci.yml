@@ -16,7 +16,7 @@ build:
     - go get github.com/parnurzeal/gorequest
     - go get github.com/urfave/cli
     - go get github.com/mitchellh/gox
-    - gox -output=$CI_PROJECT_DIR/artifacts/{{.OS}}_{{.Arch}}/k8spin
+    - CGO_ENABLED=0 gox -output=$CI_PROJECT_DIR/artifacts/{{.OS}}_{{.Arch}}/k8spin
     - tar -zcvf $CI_PROJECT_DIR/build.tar.gz $CI_PROJECT_DIR/artifacts
   artifacts:
     paths:
