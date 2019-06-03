@@ -5,7 +5,7 @@ build:
   stage: build
   image: golang:1.12-stretch
   before_script:
-    - apt-get install -y git 
+    - apt-get install -y git upx-ucl
     - cd $GOPATH/src
     - mkdir -p gitlab.com/$CI_PROJECT_NAMESPACE
     - cd gitlab.com/$CI_PROJECT_NAMESPACE
@@ -16,7 +16,8 @@ build:
     - go get github.com/parnurzeal/gorequest
     - go get github.com/urfave/cli
     - go get github.com/mitchellh/gox
-    - CGO_ENABLED=0 gox -output=$CI_PROJECT_DIR/artifacts/{{.OS}}_{{.Arch}}/k8spin
+    - CGO_ENABLED=0 gox -ldflags="-s -w" -output=$CI_PROJECT_DIR/artifacts/{{.OS}}_{{.Arch}}/k8spin
+    - find $CI_PROJECT_DIR/artifacts/ -type f -exec upx '{}' \;
     - tar -zcvf $CI_PROJECT_DIR/build.tar.gz $CI_PROJECT_DIR/artifacts
   artifacts:
     paths:
