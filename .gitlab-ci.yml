@@ -3,7 +3,7 @@ stages:
 
 build:
   stage: build
-  image: golang:1.12-stretch
+  image: golang:1.12-alpine
   before_script:
     - apk update && apk add git upx
     - cd $GOPATH/src
