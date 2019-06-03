@@ -3,7 +3,7 @@ stages:
 
 build:
   stage: build
-  image: golang:1.12-alpine
+  image: golang:1.12-stretch
   before_script:
     - apk add git 
     - cd $GOPATH/src
@@ -21,8 +21,3 @@ build:
   artifacts:
     paths:
       - '$CI_PROJECT_DIR/build.tar.gz'
-  tags:
-    - private
-    - docker
-    - kubernetes
-    - amd64
