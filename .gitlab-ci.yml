@@ -21,3 +21,8 @@ build:
   artifacts:
     paths:
       - '$CI_PROJECT_DIR/artifacts'
+  tags:
+    - private
+    - docker
+    - kubernetes
+    - amd64
