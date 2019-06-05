@@ -35,6 +35,6 @@ deploy:
   services:
     - docker:dind
   script:
-    - env | grep -E "(CI_|GITLAB_)" >> .env && docker run -v ${CI_PROJECT_DIR}:/src --env-file=.env -e GITLAB_API_KEY=$CI_API_KEY registry.gitlab.com/deviosec/containers/release:latest
+    - env | grep -E "(CI_|GITLAB_)" >> .env && docker run -v /artifacts:/artifacts --env-file=.env -e GITLAB_API_KEY=$CI_API_KEY registry.gitlab.com/deviosec/containers/release:latest
   only:
     - tags
