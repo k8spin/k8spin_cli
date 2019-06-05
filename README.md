@@ -1,5 +1,5 @@
 # K8Spin CLI
-Version: Version: 0.1.13
+Version: Version: 0.1.14
 
 # Get dependencies
 ```
