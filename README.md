@@ -1,3 +1,6 @@
+# K8Spin CLI
+Version: 0.1.2
+
 # Get dependencies
 ```
 go get github.com/olekukonko/tablewriter
