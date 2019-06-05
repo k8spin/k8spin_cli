@@ -15,3 +15,6 @@ export GOBIN=/home/pau/workspace/k8spin_cli/bin
 export PATH=$PATH:$GOBIN
 go install
 ```
+
+# Release
+Based on https://gitlab.com/deviosec/containers/release
