@@ -33,7 +33,7 @@ func main() {
 
 	app := cli.NewApp()
 	app.Name = "k8spin"
-	app.Version = "0.1.3"
+	app.Version = "0.1.4"
 	app.Usage = "CLI for managing namespaces"
 	app.Flags = []cli.Flag{
 		cli.BoolFlag{
