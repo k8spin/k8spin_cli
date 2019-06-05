@@ -19,7 +19,7 @@ build:
     - go get github.com/parnurzeal/gorequest
     - go get github.com/urfave/cli
     - go get github.com/mitchellh/gox
-    - CGO_ENABLED=0 gox -ldflags="-s -w" -output=$CI_PROJECT_DIR/artifacts/{{.OS}}{{.Arch}}_k8spin
+    - CGO_ENABLED=0 gox -ldflags="-s -w" -output=$CI_PROJECT_DIR/artifacts/{{.OS}}_{{.Arch}}_k8spin
   artifacts:
     paths:
       - '$CI_PROJECT_DIR/artifacts'
