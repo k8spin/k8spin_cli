@@ -2,8 +2,7 @@ stages:
   - build
   - deploy
 
-services:
-  - docker:dind
+
 
 build:
   stage: build
@@ -33,12 +32,9 @@ build:
 deploy:
   stage: deploy
   image: docker:stable
+  services:
+    - docker:dind
   script:
     - env | grep -E "(CI_|GITLAB_)" >> .env && docker run -v ${CI_PROJECT_DIR}:/src --env-file=.env -e GITLAB_API_KEY=$CI_API_KEY registry.gitlab.com/deviosec/containers/release:latest
   only:
     - tags
-  tags:
-    - private
-    - docker
-    - kubernetes
-    - amd64
