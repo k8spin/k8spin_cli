@@ -1,5 +1,6 @@
 stages:
   - build
+  - deploy
 
 build:
   stage: build
@@ -16,7 +17,7 @@ build:
     - go get github.com/parnurzeal/gorequest
     - go get github.com/urfave/cli
     - go get github.com/mitchellh/gox
-    - CGO_ENABLED=0 gox -ldflags="-s -w" -output=$CI_PROJECT_DIR/artifacts/{{.OS}}_{{.Arch}}/k8spin
+    - CGO_ENABLED=0 gox -osarch="linux/amd64" -ldflags="-s -w" -output=$CI_PROJECT_DIR/artifacts/{{.OS}}_{{.Arch}}/k8spin
   artifacts:
     paths:
       - '$CI_PROJECT_DIR/artifacts'
@@ -25,3 +26,10 @@ build:
     - docker
     - kubernetes
     - amd64
+
+deploy:
+    stage: deploy
+    script:
+        - env | grep -E "(CI_|GITLAB_)" >> .env && docker run -v ${CI_PROJECT_DIR}:/src --env-file=.env -e GITLAB_API_KEY=$CI_API_KEY registry.gitlab.com/deviosec/containers/release:latest
+    only:
+        - tags
