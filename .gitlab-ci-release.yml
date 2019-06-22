@@ -1,5 +1,0 @@
-name: K8Spin CLI $CI_COMMIT_TAG
-description: You can find more information at https://docs.k8spin.cloud
-tag_name: $CI_COMMIT_TAG
-changelog: $CI_COMMIT_TAG
-assets_dir: artifacts/
