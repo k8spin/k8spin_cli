@@ -85,7 +85,7 @@ func main() {
 		{
 			Name:      "get_credentials",
 			Aliases:   []string{"gc"},
-			Usage:     "get namespace credentials",
+			Usage:     "print namespace credentials to STDOUT",
 			ArgsUsage: "[name]",
 			Flags: []cli.Flag{
 				cli.BoolFlag{
@@ -114,7 +114,7 @@ func main() {
 		{
 			Name:      "set_credentials",
 			Aliases:   []string{"sc"},
-			Usage:     "set namespace credentials",
+			Usage:     "set credentials in a temp KUBECONFIG",
 			ArgsUsage: "[name]",
 			Action: func(c *cli.Context) error {
 				var namespace = c.Args().First()
