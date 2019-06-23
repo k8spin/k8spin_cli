@@ -27,7 +27,7 @@ type namespace struct {
 	Status           string   `json:"status"`
 }
 
-var Api_Base string = "https://console.beta.k8spin.cloud/api"
+var api_base string = "https://console.beta.k8spin.cloud/api"
 var debug bool
 var token string
 var set_config bool
@@ -51,6 +51,13 @@ func main() {
 			Destination: &debug,
 		},
 		cli.StringFlag{
+			Name:        "host",
+			Usage:       "K8Spin host",
+			EnvVar:      "K8SPINHOST",
+			Value:       "https://console.beta.k8spin.cloud/api",
+			Destination: &api_base,
+		},
+		cli.StringFlag{
 			Name:        "token",
 			Usage:       "K8Spin token",
 			EnvVar:      "K8SPINTOKEN",
@@ -65,7 +72,7 @@ func main() {
 			Usage:   "list all namespaces",
 			Action: func(c *cli.Context) error {
 				request := gorequest.New()
-				resp, body, _ := request.Get(Api_Base+"/namespaces").
+				resp, body, _ := request.Get(api_base+"/namespaces").
 					Set("Authorization", "Bearer "+token).
 					End()
 				debugRequest(body)
@@ -94,22 +101,40 @@ func main() {
 					return nil
 				}
 				request := gorequest.New()
-				resp, body, _ := request.Get(Api_Base+"/namespaces/"+namespace).
+				resp, body, _ := request.Get(api_base+"/namespaces/"+namespace).
 					Set("Authorization", "Bearer "+token).
 					End()
 				debugRequest(body)
 				if httpCodeCheck(resp) {
-					if set_config {
-						var filePath = "/tmp/k8spin_" + namespace
-						err := ioutil.WriteFile(filePath, []byte(body), 0644)
-						check(err)
-						os.Setenv("KUBECONFIG", filePath)
-						fmt.Println("Credentials saved at " + filePath)
-						fmt.Println("KUBECONFIG variable set")
-						syscall.Exec(os.Getenv("SHELL"), []string{os.Getenv("SHELL")}, syscall.Environ())
-					} else {
-						fmt.Println(body)
-					}
+					fmt.Println(body)
+				}
+				return nil
+			},
+		},
+		{
+			Name:      "set_credentials",
+			Aliases:   []string{"sc"},
+			Usage:     "set namespace credentials",
+			ArgsUsage: "[name]",
+			Action: func(c *cli.Context) error {
+				var namespace = c.Args().First()
+				if namespace == "" {
+					fmt.Println("You need to select a namespace")
+					return nil
+				}
+				request := gorequest.New()
+				resp, body, _ := request.Get(api_base+"/namespaces/"+namespace).
+					Set("Authorization", "Bearer "+token).
+					End()
+				debugRequest(body)
+				if httpCodeCheck(resp) {
+					var filePath = "/tmp/k8spin_" + namespace
+					err := ioutil.WriteFile(filePath, []byte(body), 0644)
+					check(err)
+					os.Setenv("KUBECONFIG", filePath)
+					fmt.Println("Credentials saved at " + filePath)
+					fmt.Println("KUBECONFIG variable set")
+					syscall.Exec(os.Getenv("SHELL"), []string{os.Getenv("SHELL")}, syscall.Environ())
 				}
 				return nil
 			},
@@ -126,7 +151,7 @@ func main() {
 				}
 
 				request := gorequest.New()
-				resp, body, _ := request.Post(Api_Base+"/namespaces").
+				resp, body, _ := request.Post(api_base+"/namespaces").
 					Set("Authorization", "Bearer "+token).
 					Send(`{"namespace_name":"` + namespace + `"}`).
 					End()
@@ -150,7 +175,7 @@ func main() {
 				}
 
 				request := gorequest.New()
-				resp, body, _ := request.Delete(Api_Base+"/namespaces/"+namespace).
+				resp, body, _ := request.Delete(api_base+"/namespaces/"+namespace).
 					Set("Authorization", "Bearer "+token).
 					End()
 
