@@ -2,6 +2,7 @@
 before:
   hooks:
     - go mod download
+
 builds:
   - main: .
     env:
@@ -20,5 +21,22 @@ builds:
       - 5
       - 6
       - 7
-archive:
-  format: binary
+
+archives:
+  - id: k8spin
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: "{{.ProjectName}}_{{.Version}}_{{.Os}}_{{.Arch}}"
+    replacements:
+      amd64: 64bit
+      386: 32bit
+      arm: arm
+      arm64: arm64
+      darwin: macOS
+      linux: linux
+      windows: windows
+    files:
+    - README.md
+    - LICENSE
