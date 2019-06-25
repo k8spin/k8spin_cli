@@ -63,7 +63,7 @@ execute() {
 get_binaries() {
   case "$PLATFORM" in
     darwin/386) BINARIES="k8spin" ;;
-    darwin/amd64) BINARIES="wk8spinio" ;;
+    darwin/amd64) BINARIES="k8spin" ;;
     darwin/arm64) BINARIES="k8spin" ;;
     darwin/armv7) BINARIES="k8spin" ;;
     linux/386) BINARIES="k8spin" ;;
