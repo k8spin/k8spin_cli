@@ -54,7 +54,7 @@ func main() {
 			Name:        "host",
 			Usage:       "K8Spin host",
 			EnvVar:      "K8SPINHOST",
-			Value:       "https://console.beta.k8spin.cloud/api",
+			Value:       "https://api.k8spin.cloud",
 			Destination: &api_base,
 		},
 		cli.StringFlag{
@@ -72,10 +72,11 @@ func main() {
 			Usage:   "list all namespaces",
 			Action: func(c *cli.Context) error {
 				request := gorequest.New()
-				resp, body, _ := request.Get(api_base+"/namespaces").
+				var url = api_base+"/namespaces"
+
+				resp, body, _ := request.Get(url).
 					Set("Authorization", "Bearer "+token).
 					End()
-				debugRequest(body)
 				if httpCodeCheck(resp) {
 					printNamespacesTable(body)
 				}
@@ -100,11 +101,12 @@ func main() {
 					fmt.Println("You need to select a namespace")
 					return nil
 				}
+				var url = api_base+"/namespaces/"+namespace
 				request := gorequest.New()
-				resp, body, _ := request.Get(api_base+"/namespaces/"+namespace).
+
+				resp, body, _ := request.Get(url).
 					Set("Authorization", "Bearer "+token).
 					End()
-				debugRequest(body)
 				if httpCodeCheck(resp) {
 					fmt.Println(body)
 				}
@@ -122,11 +124,12 @@ func main() {
 					fmt.Println("You need to select a namespace")
 					return nil
 				}
+				var url = api_base+"/namespaces/"+namespace
+
 				request := gorequest.New()
-				resp, body, _ := request.Get(api_base+"/namespaces/"+namespace).
+				resp, body, _ := request.Get(url).
 					Set("Authorization", "Bearer "+token).
 					End()
-				debugRequest(body)
 				if httpCodeCheck(resp) {
 					var filePath = "/tmp/k8spin_" + namespace
 					err := ioutil.WriteFile(filePath, []byte(body), 0644)
@@ -149,14 +152,14 @@ func main() {
 					fmt.Println("You have to set a namespace name")
 					return nil
 				}
+				var url = api_base+"/namespaces"
 
 				request := gorequest.New()
-				resp, body, _ := request.Post(api_base+"/namespaces").
+				resp, _ , _ := request.Post(url).
 					Set("Authorization", "Bearer "+token).
 					Send(`{"namespace_name":"` + namespace + `"}`).
 					End()
 
-				debugRequest(body)
 				if httpCodeCheck(resp) {
 					fmt.Println("Namespace " + namespace + " created")
 				}
@@ -173,13 +176,13 @@ func main() {
 					fmt.Println("You need to select a namespace")
 					return nil
 				}
-
+				
+				var url = api_base+"/namespaces/"+namespace
 				request := gorequest.New()
-				resp, body, _ := request.Delete(api_base+"/namespaces/"+namespace).
+				resp, _ , _ := request.Delete(url).
 					Set("Authorization", "Bearer "+token).
 					End()
 
-				debugRequest(body)
 				if httpCodeCheck(resp) {
 					fmt.Println("Namespace " + namespace + " deleted")
 				}
@@ -194,17 +197,18 @@ func main() {
 	}
 }
 
-func debugRequest(body string) {
-	if debug {
-		fmt.Println("Response body :")
-		fmt.Println(body)
-	}
-}
-
 func httpCodeCheck(response gorequest.Response) bool {
 	if debug {
+		fmt.Println("HTTP URL:")
+		fmt.Println(response.Request.URL)
 		fmt.Println("HTTP Code:")
 		fmt.Println(response.StatusCode)
+		fmt.Println("HTTP Request Headers:")
+		fmt.Println(response.Request.Header)
+		fmt.Println("HTTP Request:")
+		fmt.Println(response.Request.Body)
+		fmt.Println("HTTP Response Headers:")
+		fmt.Println(response.Header)
 		fmt.Println("HTTP Response:")
 		fmt.Println(response.Body)
 	}
