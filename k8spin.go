@@ -31,6 +31,9 @@ var api_base string = "https://console.beta.k8spin.cloud/api"
 var debug bool
 var token string
 var set_config bool
+var cpu_amount string
+var memory_amount string
+var storage_amount string
 
 func check(e error) {
 	if e != nil {
@@ -146,18 +149,24 @@ func main() {
 			Name:    "create",
 			Aliases: []string{"c"},
 			Usage:   "create a namespace",
+			Flags: []cli.Flag{
+				cli.StringFlag{Name: "cpu", Value: "100", Destination: &cpu_amount},
+				cli.StringFlag{Name: "memory", Value: "128", Destination: &memory_amount},
+				cli.StringFlag{Name: "storage", Value: "0", Destination: &storage_amount},
+			},
 			Action: func(c *cli.Context) error {
 				var namespace = c.Args().First()
 				if namespace == "" {
 					fmt.Println("You have to set a namespace name")
 					return nil
 				}
+
 				var url = api_base+"/namespaces"
 
 				request := gorequest.New()
 				resp, _ , _ := request.Post(url).
 					Set("Authorization", "Bearer "+token).
-					Send(`{"namespace_name":"` + namespace + `"}`).
+					Send(`{"namespace_name":"` + namespace + `", "resources": { "cpu":` + cpu_amount + `, "mem":` + memory_amount + `, "disks_size":` + storage_amount + `} }`).
 					End()
 
 				if httpCodeCheck(resp) {
@@ -205,8 +214,12 @@ func httpCodeCheck(response gorequest.Response) bool {
 		fmt.Println(response.StatusCode)
 		fmt.Println("HTTP Request Headers:")
 		fmt.Println(response.Request.Header)
+
 		fmt.Println("HTTP Request:")
-		fmt.Println(response.Request.Body)
+		buf := new(bytes.Buffer)
+    	buf.ReadFrom(response.Request.Body)
+		fmt.Println(buf.String())
+
 		fmt.Println("HTTP Response Headers:")
 		fmt.Println(response.Header)
 		fmt.Println("HTTP Response:")
